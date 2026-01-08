@@ -1,26 +1,84 @@
 'use client'
-import React,{ useState } from 'react'
+import React, { useState, useRef } from 'react'
+import { useForm } from "react-hook-form"
 
 const Jdform = () => {
+  const [skills, setSkills] = useState([])
+  const skillIn = useRef();
+  const [Jdform, setJdform] = useState({
+    jobTitle: "",
+    skills: [],
+    experience: "",
+    employmentType: [],
+    workMode: []
+  })
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
-    const [Jdform, setJdform] = useState({
-  jobTitle: "",
-  skills: [],
-  experience: "",
-  employmentType: [],
-  workMode: [],
-  resumeFile: null
-})
+  const onSubmit = (data) => {
+    console.log(data);
+    const value = watch("jobTitle");
+    console.log("value:", JSON.stringify(value));
+
+  }
 
   return (
     <div className='flex flex-col shadow-[1px_1px_.2rem_grey] bg-indigo-300 border-gray-900/50 p-5 w-1/2 '>
       <div className="relative">
-    <input type="text" id="floating_outlined" className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-heading bg-transparent rounded-base border-1 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer" placeholder=" " />
-    <label htmlFor="floating_outlined" className="inline-flex items-center absolute text-sm text-body duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-neutral-primary px-2 peer-focus:px-2 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">
-        
-        Floating outlined
-    </label>
-</div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 '>
+          <div className="">
+            <label htmlFor="jobTitle" className='text-sm font-bold px-3 ' >Job Title</label>
+            <div className="relative px-3 py-1 border-2 rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
+              <input {...register("jobTitle", { required: true })} type="text" id="jobTitle" className='w-full bg-transparent outline-0 text-sm text-blue-950 font-semibold ' placeholder=' ' />
+            </div></div>
+          <div className="">
+            <label htmlFor="skills" className='text-sm font-bold px-3' >Skills</label>
+            <div className="relative px-3 flex justify-between py-1 border-2 rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
+              {/* <input {...register("skills", { required: true })} type="text" id="skills" className='w-full appearance-none outline-0 text-sm text-blue-950 font-semibold ' placeholder="Enter the skills seperated by comma's" /> */}
+              <input ref={skillIn} type="text" id="skills" className='w-full appearance-none outline-0 text-sm text-blue-950 font-semibold ' placeholder="Enter the skills " />
+              <img src="/add1.png" onClick={() => {
+                const value = skillIn.current.value.trim();
+                if (!value) return;
+                setSkills(prev => [...prev, value]);
+                skillIn.current.value = "";
+              }} className='w-8 ' alt="" />
+            </div><div className="px-3 flex gap-3 pt-2 w-full">
+              {skills.map((s, i) => (<span key={i} className="bg-slate-500 flex gap-2 px-2 py-1 rounded-lg justify-center items-center text-white text-lg font-semibold"><span>{s}</span>
+                <img onClick={() => {setSkills(prev => prev.filter((f) =>f !== s)) }} src="/remove.png" className='w-6 ' alt="" />
+              </span>))}
+            </div>
+
+          </div>
+
+          <div className="">
+            <label htmlFor="experience" className='text-sm font-bold px-3 ' >Minimum Experience (Years)</label>
+            <div className="relative px-3 py-1 border-2 rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
+              <input {...register("experience", { required: true })} type="text" id="experience" className='w-full bg-transparent outline-0 text-sm text-blue-950 font-semibold ' placeholder='' />
+            </div></div>
+          <div className="">
+            <label htmlFor="employmentType" className='text-sm font-bold px-3 ' >Employment Type</label>
+            <div className="relative px-3 py-1 border-2 flex gap-5 justify-around rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
+              <span> <input type="checkbox" value="full-time" {...register("employmentType", { required: true })} /> <span>Full-time</span></span>
+              <span> <input type="checkbox" value="contract" {...register("employmentType", { required: true })} /> <span>Contract</span></span>
+              <span> <input type="checkbox" value="internship" {...register("employmentType", { required: true })} /> <span>Internship</span></span>
+            </div></div>
+          <div className="">
+            <label htmlFor="workMode" className='text-sm font-bold px-3 ' >Working Mode</label>
+            <div className="relative px-3 py-1 border-2 flex gap-5 justify-around rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
+              <span> <input type="checkbox" value="remote" {...register("workMode", { required: true })} /> <span>Remote</span></span>
+              <span> <input type="checkbox" value="onsite" {...register("workMode", { required: true })} /> <span>Onsite</span></span>
+              <span> <input type="checkbox" value="hybride" {...register("workMode", { required: true })} /> <span>Hybride</span></span>
+            </div></div>
+          {errors.jobTitle && <span>wrong</span>}
+          <label htmlFor="submit"><div className="px-3 mt-5 absolute left-[35%] hover:bg-blue-600 shadow-[1px_1px_1px_3px_blue] active:shadow-[1px_1px_3px_black] py-2 bg-blue-800 text-white font-bold rounded-lg text-center w-min text-nowrap">Analyze Resume</div>
+            <input type="submit" id='submit' className='hidden' placeholder='' /></label>
+        </form>
+      </div>
     </div>
   )
 }
