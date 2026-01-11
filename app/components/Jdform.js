@@ -13,10 +13,13 @@ const Jdform = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     data.skills = skills;
-   setJdform(data);
-   console.log(data);
+    setJdform(data);
+    let send = await fetch("/api/analyse", { method: "POST", headers: { "Content-Type": "application/json" } ,
+      body: JSON.stringify(data)});
+    let res = await send.json();
+    console.log(res)
 
   }
 
@@ -43,7 +46,7 @@ const Jdform = () => {
               }} className='w-8 ' alt="" />
             </div><div className="px-1 flex gap-3 pt-2 w-full">
               {skills.map((s, i) => (<span key={i} className="bg-blue-900/50 flex gap-2 px-2 py-1 rounded-lg justify-center items-center text-white text-lg font-semibold"><span>{s}</span>
-                <img onClick={() => {setSkills(prev => prev.filter((f) =>f !== s)) }} src="/remove.png" className='w-6 ' alt="" />
+                <img onClick={() => { setSkills(prev => prev.filter((f) => f !== s)) }} src="/remove.png" className='w-6 ' alt="" />
               </span>))}
             </div>
 
@@ -69,7 +72,7 @@ const Jdform = () => {
               <span> <input type="checkbox" value="hybride" {...register("workMode", { required: true })} /> <span>Hybride</span></span>
             </div></div>
           {errors.jobTitle && <span>wrong</span>}
-          <label htmlFor="submit"><div className="px-3 mt-2 absolute left-[35%] hover:bg-blue-600 shadow-[1px_1px_1px_3px_blue] active:shadow-[1px_1px_3px_black] py-2 bg-blue-800 text-white font-bold rounded-lg text-center w-min text-nowrap">Analyze Resume</div>
+          <label htmlFor="submit"><div className="px-3 mt-2 absolute left-[41%] hover:bg-blue-600 shadow-[1px_1px_1px_3px_blue] active:shadow-[1px_1px_3px_black] py-2 bg-blue-800 text-white font-bold rounded-lg text-center w-min text-nowrap">Send JD</div>
             <input type="submit" id='submit' className='hidden' placeholder='' /></label>
         </form>
       </div>
