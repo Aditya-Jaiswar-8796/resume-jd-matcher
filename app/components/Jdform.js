@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 const Jdform = () => {
   const [skills, setSkills] = useState([])
   const skillIn = useRef();
-  const [Jdform, setJdform] = useState();
+  const [Jdform, setJdform] = useState(null);
   const {
     register,
     handleSubmit,

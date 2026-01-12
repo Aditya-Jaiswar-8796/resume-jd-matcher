@@ -17,6 +17,7 @@ const parser = new SmartParser();
       results.push({
         name: file.name,
         text: data.text,
+
       });
       
     } else {
@@ -27,6 +28,26 @@ const parser = new SmartParser();
         text: data.value,
       });
     }
+  }
+const SECTION_MAP = {
+  summary: /^(summary|profile)$/i,
+  experience: /^(experience|work experience|employment)$/i,
+  skills: /^(skills|technical skills|technologies)$/i,
+  education: /^(education|academic)$/i,
+  projects: /^(projects|open source)$/i
+};
+  for (const result of results) {
+   result.rawText = result.text
+  .toLowerCase()
+  .replace(/https?:\/\/\S+/g, "")            
+  .replace(/\S+@\S+\.\S+/g, "")               
+  .replace(/(\+?\d[\d\s-]{8,}\d)/g, "")                         
+  .replace(/[^\w\s]/g, "")
+  .split("\n").filter(value => Boolean(value));
+
+
+  result.text = result.text  
+  .replace(/\s+/g, " ");   
   }
 
   return new Response(JSON.stringify(results), {

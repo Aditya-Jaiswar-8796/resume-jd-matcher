@@ -5,7 +5,7 @@ const ResumeUpload = () => {
   const [files, setFiles] = useState(null);
   const [dragOver, setDragOver] = useState(false);
 
-  const upload = (file) => {
+  const upload =async (file) => {
     console.log(file);
     const allowedTypes = [
       'application/pdf',
@@ -21,21 +21,15 @@ const ResumeUpload = () => {
     );
     setFiles(valid);
     console.log(valid);
-  }
-  
-  const send =async () => {
-    let formData = new FormData();
-    files.forEach((file,i) => { formData.append('file', file); });
+     let formData = new FormData();
+    valid.forEach((file,i) => { formData.append('file', file); });
     let res = await fetch("/api/upload",{method:"POST",
       body:formData,
       next: {revalidate: 0},
     });
     let data = await res.json();
     console.log(data);
-    
-    
   }
-  
 
   const del = (name) => {
     let newFiles = files.filter((f) => (
@@ -43,13 +37,13 @@ const ResumeUpload = () => {
     ));
     console.log(newFiles);
     setFiles(newFiles)
+    upload(newFiles);
   }
   const add = (file) => {
     let newfile = files;
     file.forEach((f) =>newfile.push(f));
     console.log(newfile);
-    upload(newfile);
-    
+    upload(newfile);  
   }
 
 
@@ -87,7 +81,6 @@ const ResumeUpload = () => {
           className="hidden"
           multiple
         /></label>
-        <div type="button" onClick={send} className="text-white font-bold bg-gradient-to-r rounded-xl active:scale-95 shadow-[1px_2px_.5rem_blue] from-blue-400 via-cyan-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-base text-sm px-4 py-2.5 text-center leading-5">Analyse Resume</div>
       </div>
     </div>
   : <label htmlFor="file-upload" className='w-1/2 '>
