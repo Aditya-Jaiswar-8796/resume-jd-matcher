@@ -45,10 +45,28 @@ const SECTION_MAP = {
   .replace(/[^\w\s]/g, "")
   .split("\n").filter(value => Boolean(value));
 
-
+  result.sections = {};
+  let currentSection = null;
+  result.rawText.forEach(line => {
+    if (typeof line !== "string") return;
+    let isSectionHeader = false;
+    for (const [key, value] of Object.entries(SECTION_MAP)) {
+      if(line.test(value)){
+        currentSection = key;
+        result.sections[currentSection] = [];
+        let isSectionHeader = true;
+        return;
+      }
+    }
+    if(isSectionHeader && currentSection) {
+      result.sections[currentSection].push(line);
+    }
+  })
+ 
   result.text = result.text  
   .replace(/\s+/g, " ");   
   }
+
 
   return new Response(JSON.stringify(results), {
     status: 200,
