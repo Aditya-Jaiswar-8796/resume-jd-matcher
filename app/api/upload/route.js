@@ -41,27 +41,29 @@ const SECTION_MAP = {
   .toLowerCase()
   .replace(/https?:\/\/\S+/g, "")            
   .replace(/\S+@\S+\.\S+/g, "")               
-  .replace(/(\+?\d[\d\s-]{8,}\d)/g, "")                         
   .replace(/[^\w\s]/g, "")
+  .replace(/(\+?\d{10,})/g, "")                         
   .split("\n").filter(value => Boolean(value));
 
   result.sections = {};
   let currentSection = null;
-  result.rawText.forEach(line => {
+  for (const line of result.rawText) {
     if (typeof line !== "string") return;
     let isSectionHeader = false;
     for (const [key, value] of Object.entries(SECTION_MAP)) {
-      if(line.test(value)){
+      if(value.test(line.trim())) {
         currentSection = key;
+        if(!result.sections[currentSection]){
         result.sections[currentSection] = [];
-        let isSectionHeader = true;
-        return;
+      }
+       isSectionHeader = true;
+       break;
       }
     }
-    if(isSectionHeader && currentSection) {
+    if(!isSectionHeader && currentSection) {
       result.sections[currentSection].push(line);
     }
-  })
+  }
  
   result.text = result.text  
   .replace(/\s+/g, " ");   
