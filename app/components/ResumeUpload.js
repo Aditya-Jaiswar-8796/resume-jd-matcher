@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 
-const ResumeUpload = () => {
+const ResumeUpload = (props) => {
   const [files, setFiles] = useState(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -28,6 +28,7 @@ const ResumeUpload = () => {
       next: {revalidate: 0},
     });
     let data = await res.json();
+    props.setExtarctedResume(data);
     console.log(data);
   }
 

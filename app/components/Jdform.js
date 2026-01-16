@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react'
 import { useForm } from "react-hook-form"
 
-const Jdform = () => {
+const Jdform = (props) => {
   const [skills, setSkills] = useState([])
   const skillIn = useRef();
   const [Jdform, setJdform] = useState(null);
@@ -15,9 +15,10 @@ const Jdform = () => {
 
   const onSubmit = async (data) => {
     data.skills = skills;
+    console.log("loading...");
     setJdform(data);
     let send = await fetch("/api/analyse", { method: "POST", headers: { "Content-Type": "application/json" } ,
-      body: JSON.stringify(data)});
+      body: JSON.stringify({jd :data,resumes : props.extarctedResume})});
     let res = await send.json();
     console.log(res)
 
@@ -72,8 +73,9 @@ const Jdform = () => {
               <span> <input type="checkbox" value="hybride" {...register("workMode", { required: true })} /> <span>Hybride</span></span>
             </div></div>
           {errors.jobTitle && <span>wrong</span>}
-          <label htmlFor="submit"><div className="px-3 mt-2 absolute left-[41%] hover:bg-blue-600 shadow-[1px_1px_1px_3px_blue] active:shadow-[1px_1px_3px_black] py-2 bg-blue-800 text-white font-bold rounded-lg text-center w-min text-nowrap">Send JD</div>
-            <input type="submit" id='submit' className='hidden' placeholder='' /></label>
+          <label htmlFor="submit"><div className="px-3 mt-2 absolute left-[41%] hover:bg-blue-600 shadow-[1px_1px_1px_3px_blue] active:shadow-[1px_1px_3px_black] py-2 bg-blue-800 text-white font-bold rounded-lg text-center w-min text-nowrap">Analyse Resume</div>
+            <input type="submit" id='submit' className='hidden' placeholder=''  />
+            </label>
         </form>
       </div>
     </div>
