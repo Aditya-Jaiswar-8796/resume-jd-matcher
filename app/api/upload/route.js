@@ -7,6 +7,7 @@ export async function POST(req) {
   const formData = await req.formData();
   const files = formData.getAll('file') || [];
   const results = [];
+  const folder = [];
   const parser = new SmartParser();
   for (const file of files) {
     const arrayBuffer = await file.arrayBuffer();
@@ -81,7 +82,9 @@ export async function POST(req) {
         }
       }
     }
-    result.sections.experience = result.sections.experience.reduce((acc, curr) => acc+curr);
+    if (result.sections.experience) {
+      result.sections.experience = result.sections.experience.reduce((acc, curr) => acc+curr);
+    }
     result.text = result.text
       .replace(/\s+/g, " ");
   }

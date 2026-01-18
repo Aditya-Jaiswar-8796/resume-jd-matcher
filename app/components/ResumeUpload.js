@@ -20,6 +20,7 @@ const ResumeUpload = (props) => {
     }
     );
     setFiles(valid);
+    props.setFiles(valid);
     console.log(valid);
      let formData = new FormData();
     valid.forEach((file,i) => { formData.append('file', file); });
@@ -29,7 +30,7 @@ const ResumeUpload = (props) => {
     });
     let data = await res.json();
     props.setExtarctedResume(data);
-    console.log(data);
+    console.log(data); 
   }
 
   const del = (name) => {
@@ -37,7 +38,8 @@ const ResumeUpload = (props) => {
       f.name !== name
     ));
     console.log(newFiles);
-    setFiles(newFiles)
+    setFiles(newFiles);
+    props.setFiles(newFiles);
     upload(newFiles);
   }
   const add = (file) => {

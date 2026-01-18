@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { store } from "@/lib/store";
+import crypto from "crypto";
 
 export async function POST(request) {
-const body = await request.json();
-  const { jd, resumes } = body;
+  const body = await request.json();
+  const { jd, resumes, files } = body;
   const results = resumes.map((resume) => {
     const jdSkills = jd.skills.map(skill =>
       skill.toLowerCase().trim()
@@ -12,8 +14,8 @@ const body = await request.json();
       .map(skill => skill.toLowerCase().trim());
     const matchedSkills = jdSkills.filter(skill => resumeSkills.includes(skill));
     const skillMatchPercentage = (matchedSkills.length / jdSkills.length) * 100;
-    let experience = resume.sections.experience ? "matched":"not matched";
-    let totalSkills={
+    let experience = resume.sections.experience ? "matched" : "not matched";
+    let totalSkills = {
       skillMatchPercentage: skillMatchPercentage.toFixed(2),
       matchedSkills,
       unMatchedSkills: jdSkills.filter(skill => !matchedSkills.includes(skill)),
@@ -27,6 +29,14 @@ const body = await request.json();
       totalscore: totalSkills.score.toFixed(2),
     };
   });
+  const analysisId = crypto.randomUUID();
+store.set(analysisId, {
+  results,
+  files,
+});
 
-  return NextResponse.json({ see: "done", jd, results});
+  return NextResponse.json({
+    analysis: "completed",
+    analysisId,
+  });
 }
