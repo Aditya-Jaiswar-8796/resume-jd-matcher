@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 
 function PdfPreview() {
-  const [file, setFile] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
 
   useEffect(() => {

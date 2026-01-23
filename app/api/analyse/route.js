@@ -4,11 +4,14 @@ import crypto from "crypto";
 
 export async function POST(request) {
   const body = await request.json();
-  const { jd, resumes, files } = body;
+  const { jd, resumes} = body;
   const results = resumes.map((resume) => {
     const jdSkills = jd.skills.map(skill =>
       skill.toLowerCase().trim()
     );
+    if(!resume.sections.skills) {
+      resume.sections.skills = [];
+    }
     const resumeSkills = resume.sections.skills
       .flatMap(skill => skill.split(/\s+/g))
       .map(skill => skill.toLowerCase().trim());
@@ -21,8 +24,10 @@ export async function POST(request) {
       unMatchedSkills: jdSkills.filter(skill => !matchedSkills.includes(skill)),
       extraSkills: resumeSkills.filter(skill => !matchedSkills.includes(skill)),
     };
+    
     totalSkills.score = (skillMatchPercentage * 0.7) + (experience === "matched" ? 30 : 0);
     return {
+      id: resume.id,
       name: resume.name,
       totalSkills,
       experience,
@@ -30,10 +35,7 @@ export async function POST(request) {
     };
   });
   const analysisId = crypto.randomUUID();
-store.set(analysisId, {
-  results,
-  files,
-});
+store.set(analysisId, results);
 
   return NextResponse.json({
     analysis: "completed",

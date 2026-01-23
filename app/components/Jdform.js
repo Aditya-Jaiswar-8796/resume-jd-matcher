@@ -21,7 +21,7 @@ const Jdform = (props) => {
     setJdform(data);
     let send = await fetch("/api/analyse", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jd: data, resumes: props.extarctedResume, files: props.files }),
+      body: JSON.stringify({ jd: data, resumes: props.extarctedResume}),
     });
     let res = await send.json();
     router.push(`/results/${res.analysisId}`);
@@ -50,7 +50,7 @@ const Jdform = (props) => {
                 setSkills(prev => [...prev, value]);
                 skillIn.current.value = "";
               }} className='w-8 ' alt="" />
-            </div><div className="px-1 flex gap-3 pt-2 w-full">
+            </div><div className="px-1 flex flex-wrap gap-3 pt-2 w-full">
               {skills.map((s, i) => (<span key={i} className="bg-blue-900/50 flex gap-2 px-2 py-1 rounded-lg justify-center items-center text-white text-lg font-semibold"><span>{s}</span>
                 <img onClick={() => { setSkills(prev => prev.filter((f) => f !== s)) }} src="/remove.png" className='w-6 ' alt="" />
               </span>))}
