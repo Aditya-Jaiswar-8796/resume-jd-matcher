@@ -42,7 +42,6 @@ const Jdform = (props) => {
           <div className="">
             <label htmlFor="skills" className='text-sm font-bold px-3' >Skills</label>
             <div className="relative px-3 flex justify-between py-1 border-2 rounded-md shadow-[1px_1px_.3rem_inset] border-gray-500">
-              {/* <input {...register("skills", { required: true })} type="text" id="skills" className='w-full appearance-none outline-0 text-sm text-blue-950 font-semibold ' placeholder="Enter the skills seperated by comma's" /> */}
               <input ref={skillIn} type="text" id="skills" className='w-full appearance-none outline-0 text-sm text-blue-950 font-semibold ' placeholder="Enter the skills " />
               <img src="/add1.png" onClick={() => {
                 const value = skillIn.current.value.trim();

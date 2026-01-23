@@ -42,9 +42,9 @@ const ResultsPage = ({ params }) => {
       <div className=" top-50 left-200 absolute w-72 h-72 skew-12 blur-3xl  bg-blue-400/30 rounded-full"></div>
       <h1 className="text-center text-[4rem] mx-4  text-cyan-300 fill-cyan-500 drop-shadow-lg drop-shadow-cyan-500 ">Resume Ranking</h1>
       <div className="flex justify-center w-full h-full">
-        <div className="border-4 my-4 mx-10 grow w-150 max-h-112 overflow-auto bg-blue-300/20 border-blue-500 shadow-[inset_0_0_10px_#005a70] rounded-lg p-5 flex flex-wrap gap-4 ">
+        <div className="border-4  my-4 mx-10 grow w-150 max-h-112 overflow-auto bg-blue-300/20 border-blue-500 shadow-[inset_0_0_10px_#005a70] rounded-lg p-5 flex flex-wrap items-start gap-4 ">
         {resumes ? resumes.map((r, i) => (
-          <div key={r.id} className="p-5 relative border-2 border-yellow-100  text-white  rounded-lg shadow-[inset_0_0_10px_aqua] flex flex-col items-center justify-between gap-2 w-56 bg-cyan-300/30">
+          <div key={r.id} className="p-5 relative border-2 border-yellow-100  text-white  rounded-lg shadow-[inset_0_0_10px_aqua] flex flex-col items-center justify-center gap-2 w-56 bg-cyan-300/30">
             <h3 onClick={() => {
               pdfUrl === `/uploads/${r.id}.pdf` ? setPreview(!preview) : setPreview(true);
               setPdfUrl(`/uploads/${r.id}.pdf`);
