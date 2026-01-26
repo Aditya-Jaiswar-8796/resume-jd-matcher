@@ -16,7 +16,7 @@ export async function POST(request) {
       .flatMap(skill => skill.split(/\s+/g))
       .map(skill => skill.toLowerCase().trim());
     const matchedSkills = jdSkills.filter(skill => resumeSkills.includes(skill));
-    const skillMatchScore = (matchedSkills.length / jdSkills.length) * 70;
+    let skillMatchScore = (matchedSkills.length / jdSkills.length) * 70;
     let totalSkills = {
       skillMatchScore: skillMatchScore.toFixed(2),
       matchedSkills,
@@ -32,8 +32,8 @@ export async function POST(request) {
     }
     let jobs = jd.jobTitle.split(/\s+/g);
     let match = resume.text.includes(jobs);
-    let titleScore = 0;
-    match ? titleScore = (jobs.length / match.length) * 10 : titleScore = 0;
+    let titleScore;
+    match ? titleScore = (jobs.length / match.length) * 10 : titleScore = 0.00;
     let type = jd.employmentType;
     let preference = resume.text.includes(type);
     let typeScore = 0;
