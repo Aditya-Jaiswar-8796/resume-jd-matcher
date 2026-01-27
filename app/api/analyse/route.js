@@ -30,7 +30,7 @@ export async function POST(request) {
     else {
       expScore = (resume.sections.experience /jd.experience ) * 20;
     }
-    let jobs = jd.jobTitle.split(/\s+/g);
+    let jobs = jd.jobTitle.trim().split(/\s+/g);
     let match = resume.text.includes(jobs);
     let titleScore;
     match ? titleScore = (jobs.length / match.length) * 10 : titleScore = 0.00;
@@ -54,6 +54,7 @@ export async function POST(request) {
     console.log(`Resume: ${resume.name}, Score: ${score.toFixed(2)}, skillMatchScore: ${skillMatchScore.toFixed(2)}, expScore: ${expScore.toFixed(2)}, titleScore: ${titleScore.toFixed(2)}, typeScore: ${typeScore.toFixed(2)}, workModeScore: ${workModeScore.toFixed(2)}`);
     return {
       id: resume.id,
+      jobTitle: jd.jobTitle,
       name: resume.name,
       totalSkills,
       experience: expScore.toFixed(2),

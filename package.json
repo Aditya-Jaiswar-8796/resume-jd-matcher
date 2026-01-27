@@ -12,6 +12,7 @@
     "mammoth": "^1.11.0",
     "next": "16.1.1",
     "pdf-parse-new": "^2.0.0",
+    "pdfkit": "^0.17.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.70.0",
