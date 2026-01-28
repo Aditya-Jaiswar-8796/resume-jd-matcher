@@ -9,7 +9,7 @@ export default function Home() {
   const [scoreCard, setScoreCard] = useState();
   return (
     <>
-    <div className="w-full flex p-5 gap-5 ">
+    <div className="w-full flex p-5 gap-5  ">
       <Jdform className="w-[60%]" extarctedResume={extarctedResume} setExtarctedResume={setExtarctedResume} setScoreCard={setScoreCard}/>
       <ResumeUpload className="w-[40%]" extarctedResume={extarctedResume} setExtarctedResume={setExtarctedResume}/>
     </div>
