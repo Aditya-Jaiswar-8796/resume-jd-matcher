@@ -58,6 +58,7 @@ export async function POST(request) {
       name: resume.name,
       totalSkills,
       experience: expScore.toFixed(2),
+      expyears: resume.sections.experience,
       titleScore: titleScore.toFixed(2),
       type: { typeScore: typeScore.toFixed(2),type, preference },
       workMode: { workModeScore: workModeScore.toFixed(2), workMode, workpre },

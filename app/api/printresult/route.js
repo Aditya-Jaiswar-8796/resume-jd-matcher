@@ -12,7 +12,6 @@ export async function POST(req) {
   const stream = new PassThrough();
   const chunks = [];
 
-  // ✅ Pipe PDF into memory
   doc.pipe(stream);
 
   stream.on("data", chunk => chunks.push(chunk));
@@ -21,7 +20,6 @@ export async function POST(req) {
     console.log("PDF stream ended");
   });
 
-  // ----- CONTENT -----
   doc.fontSize(18).text("Resume Screening Report");
   doc.text('');
   doc.text(results[0] && `Job Title: ${results[0].jobTitle}`);
@@ -35,14 +33,12 @@ export async function POST(req) {
     doc.text(`Score: ${r.totalscore}%`);
     doc.text(`Matched Skills: ${r.totalSkills.matchedSkills.join(", ")}`);
     doc.text(`Missing Skills: ${r.totalSkills.unMatchedSkills.join(", ")}`);
-    doc.text(`Experience: ${r.experience}`);
+    doc.text(`Experience: ${r.expyears} years (Score: ${r.experience}%)`);
     doc.moveDown();
   });
 
-  // ✅ Finalize PDF
   doc.end();
 
-  // ✅ Wait for stream to finish
   await new Promise(resolve => stream.on("end", resolve));
 
   const pdfBuffer = Buffer.concat(chunks);

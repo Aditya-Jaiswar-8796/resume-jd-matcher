@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 const ResultsPage = ({ params }) => {
   const [preview, setPreview] = useState(false);
   const [pdfUrl, setPdfUrl] = useState();
-  const [url, setUrl] = useState();
   const { id } = React.use(params)
   const [resumes, setResumes] = useState();
   const [more, setMore] = useState(null);
@@ -39,31 +38,35 @@ const ResultsPage = ({ params }) => {
     setResumes(results);
     console.log(data);
 
-    const newRes = await fetch("/api/printresult", {
+    
+  }
+
+  const download = async () => {
+  const newRes = await fetch("/api/printresult", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ results })
+      body: JSON.stringify({ results: resumes })
     });
 
     const buffer = await newRes.arrayBuffer();
     const blob = new Blob([buffer], { type: "application/pdf" });
     
-    let urld = URL.createObjectURL(blob);
-    setUrl(urld);
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = urld;
+    a.href = url;
     a.download = "resume-screening-report.pdf";
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(urld);
-
+    URL.revokeObjectURL(url);
   }
+
   return (
-    <div className="relative h-[100vh] w-full flex flex-col gap-5 bg-indigo-950 items-center"><div className="absolute inset-0 bg-cyan-400  bg-[size:20px_20px] opacity-20 blur-[100px]"></div>
+    <div className="relative h-[100vh] w-full flex flex-col gap-5  bg-indigo-950 items-center"><div className="absolute inset-0 bg-cyan-900  bg-[size:20px_20px] opacity-20 blur-[100px]"></div>
       <div className=" top-30 left-30 absolute w-40 h-40 skew-12 blur-3xl bg-blue-500/60 rounded-full"></div>
       <div className=" top-50 left-200 absolute w-72 h-72 skew-12 blur-3xl  bg-blue-400/30 rounded-full"></div>
       <h1 className="text-center text-[4rem] mx-4  text-cyan-300 fill-cyan-500 drop-shadow-lg drop-shadow-cyan-500 ">Resume Ranking</h1>
+      <div onClick={download} type="button" className="text-white bg-gradient-to-r rounded-xl active:scale-95 z-10 shadow-[1px_2px_.5rem_blue] from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Download Result</div>
       <div className="flex justify-center w-full h-full">
         <div className="border-4  my-4 mx-10 grow w-150 max-h-112 overflow-auto bg-blue-300/20 border-blue-500 shadow-[inset_0_0_10px_#005a70] rounded-lg p-5 flex flex-wrap items-start gap-4 ">
           {resumes ? resumes.map((r, i) => (
@@ -88,7 +91,7 @@ const ResultsPage = ({ params }) => {
             </div>
           )) : <p className=" border-b-4 border-b-sky-700 w-10 h-10 rounded-b-full animate-spin delay-100 duration-700 absolute top-[50%] left-[50%]"></p>}
         </div>
-        {more && <div className="breakDown border-4 mr-10 my-4 bg-blue-500/30 border-cyan-500 rounded-lg shadow-lg p-5 text-white bg-indigo-950/80 h-[450px] w-fit">
+        {more && <div className="breakDown border-4 mr-10 mt-4 max-h-108 bg-blue-500/30 border-cyan-500 rounded-lg shadow-lg p-5 text-white bg-indigo-950/80 h-[450px] w-fit">
           <p><span className="">Skills: {parseFloat(Number(more?.totalSkills?.skillMatchScore))} / 50</span> { }</p>
           <p><span className="">Experience: {parseFloat(Number(more?.experience))} / 20</span> { }</p>
           <p><span className="">Job Title:  {parseFloat(Number(more.titleScore))} / 10</span> </p>
@@ -96,7 +99,7 @@ const ResultsPage = ({ params }) => {
           <p><span className="">Work Mode:  {parseFloat(Number(more?.workMode?.workModeScore))} / 5</span> { }</p>
         </div>}
         {preview && (
-          <embed className="z-10 border-4 mr-10 my-4 border-cyan-500 rounded-lg shadow-lg"
+          <embed className="z-10 border-4 mr-10 mt-4 max-h-108 border-cyan-500 rounded-lg shadow-lg"
             src={pdfUrl}
             type={`application/pdf`}
             width="800px"
