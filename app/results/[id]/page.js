@@ -21,7 +21,6 @@ const ResultsPage = ({ params }) => {
   }, []);
 
   const showfn = (name) => {
-    console.log(files);
     if (files.length === 0) {
       toast("Preview unavailable. Please re-upload files.", {
         autoClose: 8000,
