@@ -28,7 +28,7 @@ export async function POST(request) {
       expScore = 20;
     }
     else {
-      expScore = (resume.sections.experience /jd.experience ) * 20;
+      expScore = (resume.sections.experience / jd.experience) * 20;
     }
     let jobs = jd.jobTitle.trim().split(/\s+/g);
     let match = resume.text.includes(jobs);
@@ -38,17 +38,17 @@ export async function POST(request) {
     let preference = resume.text.includes(type);
     let typeScore = 0;
     if (!preference) {
-     typeScore = 15;
-    }else {
-     typeScore = (preference.length / type.length) * 15;
+      typeScore = 15;
+    } else {
+      typeScore = (preference.length / type.length) * 15;
     }
     let workMode = jd.workMode;
-    let  workpre= resume.text.includes(workMode);
+    let workpre = resume.text.includes(workMode);
     let workModeScore = 0;
     if (!workpre) {
-     workModeScore = 5;
-    }else {
-     workModeScore = (workpre.length / workMode.length) * 5;
+      workModeScore = 5;
+    } else {
+      workModeScore = (workpre.length / workMode.length) * 5;
     }
     const score = skillMatchScore + expScore + titleScore + typeScore + workModeScore;
     console.log(`Resume: ${resume.name}, Score: ${score.toFixed(2)}, skillMatchScore: ${skillMatchScore.toFixed(2)}, expScore: ${expScore.toFixed(2)}, titleScore: ${titleScore.toFixed(2)}, typeScore: ${typeScore.toFixed(2)}, workModeScore: ${workModeScore.toFixed(2)}`);
@@ -60,7 +60,7 @@ export async function POST(request) {
       experience: expScore.toFixed(2),
       expyears: resume.sections.experience,
       titleScore: titleScore.toFixed(2),
-      type: { typeScore: typeScore.toFixed(2),type, preference },
+      type: { typeScore: typeScore.toFixed(2), type, preference },
       workMode: { workModeScore: workModeScore.toFixed(2), workMode, workpre },
       totalscore: score.toFixed(2),
     };

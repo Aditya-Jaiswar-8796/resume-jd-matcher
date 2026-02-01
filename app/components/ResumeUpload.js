@@ -1,21 +1,58 @@
 'use client'
-//HII vercel
-import React, { useState } from 'react'
-import { ToastContainer,ToastContentProps, toast  } from 'react-toastify';
+import React, { useState, useContext } from 'react'
+import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
+import mammoth from "mammoth";
+import { useFiles } from "../context/context";
 
 const ResumeUpload = (props) => {
-  const [files, setFiles] = useState(null);
+  const { files, setFiles } = useFiles();
   const [dragOver, setDragOver] = useState(false);
+  const [resumeText, setResumeText] = useState([]);
 
 
 
-   const notify = () => {
+  const notify = () => {
     toast("Upload Successful!", {
       autoClose: 8000,
       customProgressBar: false,
       position: "top-right",
       type: "success",
     });
+  };
+  const extractPdfText = async (file) => {
+    const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf");
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+    const buffer = await file.arrayBuffer();
+
+    if (file.name.split('.')[file.name.split('.').length - 1] === "pdf") {
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+
+        let lastY = null;
+        let pageText = "";
+
+        for (const item of content.items) {
+          const y = item.transform[5];
+
+          if (lastY !== null && Math.abs(lastY - y) > 2) {
+            pageText += "\n"; 
+          }
+          pageText += item.str + " ";
+          lastY = y;
+        }
+
+        text += pageText + "\n";
+      }
+      return text;
+    } else {
+      const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
+      return value;
+    }
   };
 
   const upload = async (file) => {
@@ -25,27 +62,33 @@ const ResumeUpload = (props) => {
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ];
-    let valid = [];
-    file.forEach(f => {
-      if (allowedTypes.includes(f.type)) {
-        valid.push(f);
-      }
-    }
+    const validFiles = file.filter(f => allowedTypes.includes(f.type));
+
+    const validText = await Promise.all(
+      validFiles.map(async (f) => {
+        const text = await extractPdfText(f);
+        return { name: f.name, text };
+      })
     );
-    setFiles(valid);
-    console.log(valid);
-    let formData = new FormData();
-    valid.forEach((file, i) => { formData.append('file', file); });
+    setFiles(validFiles);
+    console.log(validFiles);
+    setResumeText(validText);
+    console.log(validText);
     let res = await fetch("/api/upload", {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validText),
       next: { revalidate: 0 },
     });
     let data = await res.json();
     notify();
     props.setExtarctedResume(data);
     console.log(data);
-    
+    console.log(files);
+    console.log(resumeText);
+
   }
 
   const del = (name) => {
@@ -65,7 +108,7 @@ const ResumeUpload = (props) => {
 
 
   return (<>
-    <ToastContainer/>
+    <ToastContainer />
     {files && files.length ? <div onDragOver={(e) => { e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className=' shadow-[1px_1px_.2rem_grey] gap-4 min-h-[80vh] border-gray-900/50 p-5 w-1/2 flex items-center flex-col justify-between'>
       <div className=" h-[80%] overflow-y-auto w-full">
         <div className="head flex justify-between border-b-2 border-blue-300 text-md text-blue-950 font-medium px-3 ">
