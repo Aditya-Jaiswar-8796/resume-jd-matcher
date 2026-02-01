@@ -1,54 +1,8 @@
-import SmartParser from "pdf-parse-new/lib/SmartPDFParser";
-import mammoth from "mammoth";
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
-
-export const runtime = "nodejs";
-
+import crypto from 'crypto';
 export async function POST(req) {
-  const formData = await req.formData();
-  const files = formData.getAll('file') || [];
-  const results = [];
-  const parser = new SmartParser();
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-  }
-  for (const file of files) {
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const id = crypto.randomUUID();
+const data = await req.json();
+  const results = data;
 
-    let filePath;
-
-    if (file.name.split('.')[file.name.split('.').length - 1] === "pdf") {
-      filePath = path.join(uploadDir, `${id}.pdf`);
-      const data = await parser.parse(buffer);
-
-      results.push({
-        id,
-        name: file.name,
-        text: data.text,
-      });
-
-    } else {
-      filePath = path.join(uploadDir, `${id}.docx`);
-      const data = await mammoth.extractRawText(buffer);
-
-      results.push({
-        id,
-        name: file.name,
-        text: data.value,
-      });
-    }
-    fs.writeFileSync(filePath, buffer);
-    setTimeout(() => {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }, 1000 * 60 * 30); // 30 minutes
-  }
   const SECTION_MAP = {
     summary: /^(summary|profile)$/i,
     experience: /^(experience|work experience|employment)$/i,
@@ -57,6 +11,7 @@ export async function POST(req) {
     projects: /^(projects|open source)$/i
   };
   for (const result of results) {
+    result.id = crypto.randomUUID();
     result.rawText = result.text
       .toLowerCase()
       .replace(/https?:\/\/\S+/g, "")

@@ -1,8 +1,12 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useFiles } from "@/app/context/context";
+import { ToastContainer, toast } from "react-toastify";
 
 const ResultsPage = ({ params }) => {
+  const { files, setFiles } = useFiles();
   const [preview, setPreview] = useState(false);
+  const [prepdf, setPrepdf] = useState();
   const [pdfUrl, setPdfUrl] = useState();
   const { id } = React.use(params)
   const [resumes, setResumes] = useState();
@@ -15,6 +19,35 @@ const ResultsPage = ({ params }) => {
 
     loadFlies();
   }, []);
+
+  const showfn = (name) => {
+    if (files.length === 0) {
+      toast("Preview unavailable. Please re-upload files.", {
+        autoClose: 8000,
+        position: "top-right",
+        type: "error",
+      });
+      return;
+    }
+    if (prepdf === name) {
+      preview && setPreview(false);
+      setPrepdf(null);
+      setPdfUrl(null);
+      return;
+    }
+    const file = files.find((f) => f.name === name);
+    if (!file) {
+      console.error("File not found:", name);
+      return;
+    }
+    console.log("clicked");
+    console.log(pdfUrl);
+    pdfUrl && URL.revokeObjectURL(pdfUrl);
+    const url = URL.createObjectURL(file);
+    pdfUrl === url ? setPreview(!preview) : setPreview(true);
+    setPdfUrl(url);
+    setPrepdf(file.name);
+  }
 
   function getScoreColor(score) {
     if (score >= 80) return "text-green-500 bg-green-100";
@@ -38,11 +71,11 @@ const ResultsPage = ({ params }) => {
     setResumes(results);
     console.log(data);
 
-    
+
   }
 
   const download = async () => {
-  const newRes = await fetch("/api/printresult", {
+    const newRes = await fetch("/api/printresult", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ results: resumes })
@@ -50,7 +83,7 @@ const ResultsPage = ({ params }) => {
 
     const buffer = await newRes.arrayBuffer();
     const blob = new Blob([buffer], { type: "application/pdf" });
-    
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -65,6 +98,7 @@ const ResultsPage = ({ params }) => {
     <div className="relative h-[100vh] w-full flex flex-col gap-5  bg-indigo-950 items-center"><div className="absolute inset-0 bg-cyan-900  bg-[size:20px_20px] opacity-20 blur-[100px]"></div>
       <div className=" top-30 left-30 absolute w-40 h-40 skew-12 blur-3xl bg-blue-500/60 rounded-full"></div>
       <div className=" top-50 left-200 absolute w-72 h-72 skew-12 blur-3xl  bg-blue-400/30 rounded-full"></div>
+      <ToastContainer />
       <h1 className="text-center text-[4rem] mx-4  text-cyan-300 fill-cyan-500 drop-shadow-lg drop-shadow-cyan-500 ">Resume Ranking</h1>
       <div onClick={download} type="button" className="text-white bg-gradient-to-r rounded-xl active:scale-95 z-10 shadow-[1px_2px_.5rem_blue] from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Download Result</div>
       <div className="flex justify-center w-full h-full">
@@ -76,10 +110,7 @@ const ResultsPage = ({ params }) => {
                 console.log(more);
 
               }} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#2854C5"><path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
-              <h3 onClick={() => {
-                pdfUrl === `/uploads/${r.id}.pdf` ? setPreview(!preview) : setPreview(true);
-                setPdfUrl(`/uploads/${r.id}.pdf`);
-              }}>{r.name}</h3>
+              <h3 onClick={() => showfn(r.name)} className="cursor-pointer">{r.name}</h3>
               <p><span className="text-[#000875d7] font-bold">Score:</span> <span className={`px-2 py-1 rounded-full font-bold drop-shadow-lg drop-shadow-cyan-500 ${getScoreColor(parseFloat(r.totalscore))}`}>{r.totalscore}</span></p>
 
               <div className="w-full bg-green-300/30 border-2  relative rounded-full h-5 mb-2 ">

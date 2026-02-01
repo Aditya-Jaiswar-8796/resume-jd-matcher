@@ -33,7 +33,7 @@ export async function POST(req) {
     doc.text(`Score: ${r.totalscore}%`);
     doc.text(`Matched Skills: ${r.totalSkills.matchedSkills.join(", ")}`);
     doc.text(`Missing Skills: ${r.totalSkills.unMatchedSkills.join(", ")}`);
-    doc.text(`Experience: ${r.expyears} years (Score: ${r.experience}%)`);
+    doc.text(`Experience: ${r.expyears} years (Score: ${r.experience}/20.00)`);
     doc.moveDown();
   });
 
