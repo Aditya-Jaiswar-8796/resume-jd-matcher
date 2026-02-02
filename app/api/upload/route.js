@@ -39,7 +39,7 @@ const data = await req.json();
         if (SECTION_MAP.experience.test(currentSection)) {
           let newLine = line.replace(/[^\d{4}\s+\-*\d{4}]/gi, "").trim();
           if (newLine !== "") {
-            const n1Match = newLine.match(/^\d{4}/);
+            const n1Match = newLine.match(/\d{4}\s/);
             const n2Match = newLine.match(/\d{4}$/);
 
             if (n1Match && n2Match) {
