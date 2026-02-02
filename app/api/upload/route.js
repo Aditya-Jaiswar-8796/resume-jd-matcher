@@ -1,11 +1,12 @@
 import crypto from 'crypto';
+import { log } from 'console';
 export async function POST(req) {
 const data = await req.json();
   const results = data;
 
   const SECTION_MAP = {
     summary: /^(summary|profile)$/i,
-    experience: /^(experience|work experience|employment)$/i,
+    experience: /^(experience|work experience|employment|work history)$/i,
     skills: /^(skills|technical skills|technologies)$/i,
     education: /^(education|academic)$/i,
     projects: /^(projects|open source)$/i
@@ -46,7 +47,7 @@ const data = await req.json();
               const n1 = Number(n1Match[0]);
               const n2 = Number(n2Match[0]);
               newLine = n2 - n1;
-              console.log("Experience Line:", newLine);
+              log("Experience Line:", newLine);
               result.sections[currentSection].push(newLine);
             }
           }
@@ -57,7 +58,11 @@ const data = await req.json();
       }
     }
     if (result.sections.experience) {
-      result.sections.experience = result.sections.experience.reduce((acc, curr) => acc + curr);
+      if (result.sections.experience.length > 0) {
+        result.sections.experience = result.sections.experience.reduce((acc, curr) => acc + curr);
+      } else {
+        result.sections.experience = 0;
+      }
     }
     result.text = result.text
       .replace(/\s+/g, " ");
