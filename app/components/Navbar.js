@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 const Navbar = () => {
   return (<>
-  <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-400/50 bg-[#f7f7f9] backdrop-blur-xl animate-fade-down">
+  <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-400/50  bg-[#f7f7f9] backdrop-blur-xl animate-fade-down">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center ml-5 gap-2">
           <div className=" bg-[#26dfc6] flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
@@ -17,10 +17,7 @@ const Navbar = () => {
           </span>
           </Link>
         </div>
-        <Link
-          href="/tool"
-          className="inline-flex items-center gap-2 bg-[#26dfc6] text-white rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-all hover:opacity-90 hover:scale-105"
-        >
+        <Link href="/tool" className="inline-flex items-center gap-2 bg-[#26dfc6] text-white rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-all hover:opacity-90 hover:scale-105">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
