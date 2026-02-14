@@ -40,7 +40,7 @@ const ResumeUpload = (props) => {
           const y = item.transform[5];
 
           if (lastY !== null && Math.abs(lastY - y) > 2) {
-            pageText += "\n"; 
+            pageText += "\n";
           }
           pageText += item.str + " ";
           lastY = y;
@@ -145,31 +145,30 @@ const ResumeUpload = (props) => {
         /></label>
       </div>
     </div>
-      : <label htmlFor="file-upload" className='w-1/2 '>
-        <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "shadow-[1px_1px_10px_5px_blue]" : "shadow-[1px_1px_.2rem_grey]"}  gap-4 min-h-[80vh] border-gray-900/50 p-5 w-full flex items-center flex-col justify-around`}>
-          <div className={`relative group `}>
-            <img
-              src="/upload.png"
-              alt=""
-              className="group-hover:opacity-0 transition-opacity w-[12rem]"
-            />
-
-            <img
-              src="/upload.gif"
-              alt=""
-              className="absolute top-5 inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 w-[18rem] scale-150"
+      : <div className="w-1/2 bg-white p-6 rounded-xl border border-slate-300 flex flex-col gap-5 min-h-[80vh] justify-start">
+        <div className="text-left text-xl font-semibold flex items-center gap-2 mb-2 text-gray-900">
+          <svg className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          Upload Resumes
+        </div>
+        <label htmlFor="file-upload" className='w-1/2 '>
+          <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "" : ""}  border-dashed rounded-xl border-2 border-slate-300 p-10 flex gap-5 flex-col items-center w-[42vw] h-[50vh] cursor-pointer`}>
+            <div className="p-5 w-20 mt-15 h-20 bg-teal-200/30 rounded-xl">
+              <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </div>
+            <h3 className='text-lg text-gray-900 font-semibold'>
+              Drag files here or click to upload
+            <div className='text-slate-400 text-center text-sm font-medium'>Supports PDF, DOC, DOCX</div>
+            </h3>
+            <input onChange={(e) => { let file = Array.from(e.target.files); upload(file); }}
+              id="file-upload"
+              type="file" accept=".pdf,.doc,.docx"
+              className="hidden"
+              multiple
             />
           </div>
-          <h1 className='text-xl text-gray-900 font-semibold'>
-            Drag files here or click to upload
-          </h1>
-          <input onChange={(e) => { let file = Array.from(e.target.files); upload(file); }}
-            id="file-upload"
-            type="file" accept=".pdf,.doc,.docx"
-            className="hidden"
-            multiple
-          />
-        </div></label>}
+        </label>
+      </div>}
+
   </>)
 }
 

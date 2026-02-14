@@ -6,7 +6,7 @@ export default function page() {
   return (
     <div className='bg-slate-100 w-full h-full'>
       <Herosection />
-      <div className="how flex flex-col items-center">
+      <div className="my-15 pt-20 flex flex-col items-center " id="how">
         <span className='text-lg font-bold text-teal-400 text-center mt-10'>HOW IT WORKS</span>
         <h1 className='text-4xl font-bold mt-3'>Three steps. That's it.</h1>
         <div className="step flex items-start justify-center gap-10 mb-10">
@@ -35,7 +35,7 @@ export default function page() {
           </div>
         </div>
       </div>
-      <div className="feature flex flex-col items-center">
+      <div className="mb-20 feature flex flex-col items-center">
         <span className='text-lg font-bold text-teal-400 text-center mt-10'>FEATURES</span>
         <h1 className='text-4xl font-bold mt-3'>Everything you need to hire smarter</h1>
         <div className="step flex items-start justify-center gap-10 mb-10">
