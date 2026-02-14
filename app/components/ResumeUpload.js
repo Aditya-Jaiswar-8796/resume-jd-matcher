@@ -151,7 +151,7 @@ const ResumeUpload = (props) => {
           Upload Resumes
         </div>
         <label htmlFor="file-upload" className='w-1/2 '>
-          <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "" : ""}  border-dashed rounded-xl border-2 border-slate-300 p-10 flex gap-5 flex-col items-center w-[42vw] h-[50vh] cursor-pointer`}>
+          <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "border-teal-400 bg-slate-300/20 border-3 " : "hover:border-teal-200 border-2 hover:bg-slate-300/20"}  border-dashed rounded-xl border-slate-300 p-10 flex gap-5 flex-col items-center w-[42vw] h-[50vh] cursor-pointer`}>
             <div className="p-5 w-20 mt-15 h-20 bg-teal-200/30 rounded-xl">
               <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             </div>
