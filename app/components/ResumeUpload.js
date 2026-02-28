@@ -11,8 +11,8 @@ const ResumeUpload = (props) => {
 
 
 
-  const notify = () => {
-    toast("Upload Successful!", {
+  const notify = (text) => {
+    toast(text, {
       autoClose: 8000,
       customProgressBar: false,
       position: "top-right",
@@ -55,7 +55,7 @@ const ResumeUpload = (props) => {
     }
   };
 
-  const upload = async (file) => {
+  const upload = async (file,add) => {
     console.log(file);
     const allowedTypes = [
       'application/pdf',
@@ -83,7 +83,7 @@ const ResumeUpload = (props) => {
       next: { revalidate: 0 },
     });
     let data = await res.json();
-    notify();
+    add ? notify("Upload Successful!"): notify("File removed");
     props.setExtarctedResume(data);
     console.log(data);
     console.log(files);
@@ -97,78 +97,65 @@ const ResumeUpload = (props) => {
     ));
     console.log(newFiles);
     setFiles(newFiles);
-    upload(newFiles);
+    upload(newFiles,false);
   }
   const add = (file) => {
     let newfile = files;
     file.forEach((f) => newfile.push(f));
     console.log(newfile);
-    upload(newfile);
+    upload(newfile,true);
   }
 
 
   return (<>
     <ToastContainer />
-    {files && files.length ? <div onDragOver={(e) => { e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className=' shadow-[1px_1px_.2rem_grey] gap-4 min-h-[80vh] border-gray-900/50 p-5 w-1/2 flex items-center flex-col justify-between'>
-      <div className=" h-[80%] overflow-y-auto w-full">
-        <div className="head flex justify-between border-b-2 border-blue-300 text-md text-blue-950 font-medium px-3 ">
-          <span>Name</span>
-          <div className="flex gap-4 ">
-            <span>Type</span>
-            <span>Size</span>
-            <span className='w-10'></span>
+
+    <div className="w-1/2 bg-white p-6 rounded-xl border border-slate-300 flex flex-col gap-5 min-h-[80vh] justify-start">
+      <div className="text-left text-xl font-semibold flex items-center gap-2 mb-2 text-gray-900">
+        <svg className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        Upload Resumes
+      </div>
+      <label htmlFor="file-upload" className='w-1/2 '>
+        <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "border-teal-400 bg-slate-300/20 border-3 " : "hover:border-teal-200 border-2 hover:bg-slate-300/20"}  border-dashed rounded-xl border-slate-300 p-10 flex gap-5 flex-col items-center w-[42vw] h-[50vh] cursor-pointer`}>
+          <div className="p-5 w-20 mt-15 h-20 bg-teal-200/30 rounded-xl">
+            <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
           </div>
+          <h3 className='text-lg text-gray-900 font-semibold'>
+            Drag files here or click to upload
+            <div className='text-slate-400 text-center text-sm font-medium'>Supports PDF, DOC, DOCX</div>
+          </h3>
+          <input onChange={(e) => { 
+            let file = Array.from(e.target.files); 
+             add(file);
+           }}
+            id="file-upload"
+            type="file" accept=".pdf,.doc,.docx"
+            className="hidden"
+            multiple
+          />
         </div>
-        {files.map((f, i) => (
-          <div key={i} className="card my-2">
-            <div className="head flex justify-between text-sm shadow-[inset_0_0_10px_#005a70] text-blue-950 px-3 py-2 border-2 border-blue-500 bg-blue-500/30 rounded-lg w-full">
-              <span className='break-all max-w-96'>{f.name}</span>
-              <div className="flex gap-5">
-                <span>{f.name.split('.')[f.name.split('.').length - 1]}</span>
-                <span>{((f.size / 1024) / 1024).toFixed(2)}MB</span>
-                <span onClick={() => { del(f.name) }}>
-                  <img width={20} src="/delete1.png" alt="" />
-                </span>
+      </label>
+
+      {(files && files.length >0 ) &&<div className="">
+          <span className="text-sm font-semibold">{files.length} file selected</span>
+        <div className=" max-h-50 overflow-auto">
+          {files.map((f, i) => (
+            <div key={i} className="card my-2">
+              <div className="head flex justify-between text-sm px-4 py-2 border border-slate-300/70 rounded-xl bg-slate-100 w-full">
+                <div className="flex gap-3 justify-center items-center">
+                  <svg className="h-4 w-4 shrink-0 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  <span className='break-all max-w-96'>{f.name}</span></div>
+                <div className="flex gap-5">
+                  <span className='py-1 ' onClick={() => { del(f.name) }}>
+                    <svg className="h-4 w-4 " fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        )
-        )}
-      </div>
-      <div className="btn flex gap-4"> <label htmlFor="file">
-        <div type="button" className="text-white bg-gradient-to-r rounded-xl active:scale-95 shadow-[1px_2px_.5rem_blue] from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-base text-sm px-4 py-2.5 text-center leading-5">Add More!</div>
-        <input onChange={(e) => { let file = Array.from(e.target.files); add(file); }}
-          id="file"
-          type="file" accept=".pdf,.doc,.docx"
-          className="hidden"
-          multiple
-        /></label>
-      </div>
+          )
+          )}
+        </div></div>}
     </div>
-      : <div className="w-1/2 bg-white p-6 rounded-xl border border-slate-300 flex flex-col gap-5 min-h-[80vh] justify-start">
-        <div className="text-left text-xl font-semibold flex items-center gap-2 mb-2 text-gray-900">
-          <svg className="h-5 w-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-          Upload Resumes
-        </div>
-        <label htmlFor="file-upload" className='w-1/2 '>
-          <div onDragOver={(e) => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={(e) => { e.preventDefault(); let file = Array.from(e.dataTransfer.files); upload(file); }} className={`${dragOver ? "border-teal-400 bg-slate-300/20 border-3 " : "hover:border-teal-200 border-2 hover:bg-slate-300/20"}  border-dashed rounded-xl border-slate-300 p-10 flex gap-5 flex-col items-center w-[42vw] h-[50vh] cursor-pointer`}>
-            <div className="p-5 w-20 mt-15 h-20 bg-teal-200/30 rounded-xl">
-              <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="teal" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            </div>
-            <h3 className='text-lg text-gray-900 font-semibold'>
-              Drag files here or click to upload
-            <div className='text-slate-400 text-center text-sm font-medium'>Supports PDF, DOC, DOCX</div>
-            </h3>
-            <input onChange={(e) => { let file = Array.from(e.target.files); upload(file); }}
-              id="file-upload"
-              type="file" accept=".pdf,.doc,.docx"
-              className="hidden"
-              multiple
-            />
-          </div>
-        </label>
-      </div>}
-
   </>)
 }
 

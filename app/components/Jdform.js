@@ -116,13 +116,15 @@ const Jdform = (props) => {
             <label htmlFor="workMode" className='text-sm text-left font-semibold ' >Working Mode</label>
             <div className="relative flex gap-3 justify-start ">
               <label onClick={(e) => { 
-                 let checkbox = document.getElementById('1w'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
+                 let checkbox = document.getElementById('1w'); 
+                 !checkbox.checked &&  e.target.style.setProperty("border-color", "teal"),e.target.style.setProperty("color","teal"),e.target.style.setProperty("font-weight","500");
+                }
                 } htmlFor='1w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="1w" value="remote" {...register("workMode", { required: true })} /> Remote</label>
               <label onClick={(e) => { 
                  let checkbox = document.getElementById('2w'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
                 } htmlFor='2w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="2w" value="onsite" {...register("workMode", { required: true })} /> Onsite</label>
               <label onClick={(e) => { 
-                 let checkbox = document.getElementById('3w'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
+                 let checkbox = document.getElementById('3w'); !checkbox.checked &&    }
                 } htmlFor='3w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="3w" value="hybride" {...register("workMode", { required: true })} /> Hybride</label>
             </div></div><div className="hidden">
             {errors.jobTitle && notify(errors.jobTitle.message || "Job Title is required")}
