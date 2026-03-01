@@ -8,6 +8,7 @@ const Jdform = (props) => {
   const router = useRouter();
   const [skills, setSkills] = useState([])
   const skillIn = useRef();
+  const [empCheck, setEmpCheck] = useState({})
   const [Jdform, setJdform] = useState(null);
   const {
     register,
@@ -75,7 +76,20 @@ const Jdform = (props) => {
             <label htmlFor="skills" className='text-sm text-left font-semibold' >Skills</label>
             <div className="relative flex justify-between gap-2 items-end">
               <div className="   px-4 py-2 border border-slate-300/70 rounded-xl w-full bg-slate-100 mt-2">
-                <input ref={skillIn} type="text" id="skills" className='w-full appearance-none outline-0 text-sm ' placeholder="Enter a skill and press add" />
+                <input ref={skillIn}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+
+                      const value = skillIn.current.value.trim();
+                      if (!value) return;
+
+                      if (skills.includes(value)) return;
+                      setSkills(prev => [...prev, value]);
+                      skillIn.current.value = "";
+                      console.log("Enter pressed");
+                    }
+                  }} type="text" id="skills" className='w-full appearance-none outline-0 text-sm ' placeholder="Enter a skill and press add" />
               </div>
               <span onClick={() => {
                 const value = skillIn.current.value.trim();
@@ -87,8 +101,8 @@ const Jdform = (props) => {
               </span>
             </div>
             <div className="px-1 flex flex-wrap gap-3 pt-2 w-full">
-              {skills.map((s, i) => (<span key={i} className="bg-white border border-slate-300 flex gap-2 px-2 py-1 rounded-xl justify-center items-center text-sm"><span>{s}</span>
-                <svg onClick={() => { setSkills(prev => prev.filter((f) => f !== s)) }} className="h-5 w-5 rotate-45" fill="none" viewBox="0 0 24 24" stroke="red" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"></path></svg>
+              {skills.map((s, i) => (<span key={i} className="bg-slate-300/20 border border-slate-300 flex gap-2 px-2 py-1 rounded-xl justify-center text-teal-500 font-semibold items-center text-sm"><span>{s}</span>
+                <svg className="h-4 w-4 " onClick={() => { setSkills(prev => prev.filter((f) => f !== s)) }} fill="none" viewBox="0 0 24 24" stroke="gray" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
               </span>))}
             </div>
 
@@ -99,33 +113,64 @@ const Jdform = (props) => {
             <div className="relative px-4 py-2 border border-slate-300/70 rounded-xl w-full bg-slate-100 mt-2">
               <input {...register("experience", { required: true })} type="text" id="experience" className='w-full bg-transparent outline-0 text-sm text-blue-950 font-semibold ' placeholder='' />
             </div></div>
+
+          {/* checkbox */}
+
           <div className="">
             <label htmlFor="employmentType" className='text-sm text-left font-semibold' >Employment Type</label>
             <div className="relative flex gap-3 justify-start ">
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('1'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
-                } htmlFor='1' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="1" value="full-time" {...register("employmentType", { required: true })} /> Full-time</label>
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('2'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
-                }  htmlFor='2' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="2" value="contract" {...register("employmentType", { required: true })} /> Contract</label>
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('3'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
-                } htmlFor='3' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="3" value="internship" {...register("employmentType", { required: true })} /> Internship</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('1');
+                setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+              }
+              } htmlFor='1' className={` ${empCheck[1] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="1" value="full-time" {...register("employmentType", { required: true })} /> Full-time</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('2'); 
+                setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+              }
+              } htmlFor='2' className={` ${empCheck[2] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="2" value="contract" {...register("employmentType", { required: true })} /> Contract</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('3'); 
+                setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+              }
+              } htmlFor='3' className={` ${empCheck[3] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="3" value="internship" {...register("employmentType", { required: true })} /> Internship</label>
             </div></div>
           <div className="">
             <label htmlFor="workMode" className='text-sm text-left font-semibold ' >Working Mode</label>
             <div className="relative flex gap-3 justify-start ">
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('1w'); 
-                 !checkbox.checked &&  e.target.style.setProperty("border-color", "teal"),e.target.style.setProperty("color","teal"),e.target.style.setProperty("font-weight","500");
-                }
-                } htmlFor='1w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="1w" value="remote" {...register("workMode", { required: true })} /> Remote</label>
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('2w'); !checkbox.checked &&  e.target.style.setProperty("border-color", "teal");  }
-                } htmlFor='2w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="2w" value="onsite" {...register("workMode", { required: true })} /> Onsite</label>
-              <label onClick={(e) => { 
-                 let checkbox = document.getElementById('3w'); !checkbox.checked &&    }
-                } htmlFor='3w' className='px-4 py-2 border border-slate-300/70 rounded-xl text-sm text-slate-500 w-fit bg-slate-100 mt-2'> <input type="checkbox" className='hidden' id="3w" value="hybride" {...register("workMode", { required: true })} /> Hybride</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('1w');
+                setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+                 
+              }
+              } htmlFor='1w' className={` ${empCheck['1w'] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="1w" value="remote" {...register("workMode", { required: true })} /> Remote</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('2w'); 
+                setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+              }
+              } htmlFor='2w' className={` ${empCheck['2w'] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="2w" value="onsite" {...register("workMode", { required: true })} /> Onsite</label>
+              <label onClick={(e) => {
+                let checkbox = document.getElementById('3w');
+              setEmpCheck(prev => ({
+                  ...prev,
+                  [checkbox.id]: checkbox.checked
+                }));
+              }} htmlFor='3w' className={` ${empCheck['3w'] == true ? 'border-teal-300/70 bg-teal-100 text-teal-500 font-semibold' : 'border-slate-300/70 bg-slate-100 text-slate-500 '} px-4 hover:border-teal-300/70 text-sm py-2 border  rounded-xl   w-fit  mt-2`}> <input type="checkbox" className='hidden' id="3w" value="hybride" {...register("workMode", { required: true })} /> Hybride</label>
             </div></div><div className="hidden">
             {errors.jobTitle && notify(errors.jobTitle.message || "Job Title is required")}
             {errors.experience && notify("Experience is required")}
@@ -133,9 +178,9 @@ const Jdform = (props) => {
             {errors.workMode && notify("Work Mode is required")}
           </div>
           <label htmlFor="submit" className="flex justify-center items-center gap-2 bg-gradient-to-r from-teal-400 to-teal-500 via-teal-200 text-blue-800/70 font-bold rounded-xl bg-accent px-5 py-2.5 text-sm text-accent-foreground transition-all hover:opacity-90 hover:scale-105">
-          <svg className="h-4 w-4 opacity-70" fill="navy" viewBox="0 0 24 24" stroke="navy" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>Analyse Resume
+            <svg className="h-4 w-4 opacity-70" fill="navy" viewBox="0 0 24 24" stroke="navy" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>Analyse Resume
             <input type="submit" id='submit' className='hidden' placeholder='' />
           </label>
         </form>

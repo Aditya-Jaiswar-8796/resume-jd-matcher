@@ -1,6 +1,7 @@
 import React from 'react'
 import Herosection from './components/Herosection'
 import Tick from './components/Tick'
+import Link from 'next/link'
 
 export default function page() {
   return (
@@ -87,8 +88,8 @@ export default function page() {
         <span className='text-[4rem] text-white font-bold'>Ready to hire smarter?</span>
         <p className='text-lg mx-4 font-semibold text-center w-150 text-wrap text-slate-400'>Upload your resumes and job description — get instant AI-powered matching results.</p>
         <div className="flex items-center gap-5">
-          <button className='bg-gradient-to-r from-teal-500 to-emerald-400 via-cyan-300 cursor-pointer text-[#214186] font-bold py-3 px-6 rounded-lg mt-5 hover:bg-[#12e2c6] transition hover:scale-105 duration-300'>Start Analysing Resume</button>
-
+          <Link href='/tool'><button className='bg-gradient-to-r from-teal-500 to-emerald-400 via-cyan-300 cursor-pointer text-[#214186] font-bold py-3 px-6 rounded-lg mt-5 hover:bg-[#12e2c6] transition hover:scale-105 duration-300'>Start Analysing Resume</button>
+</Link>
         </div>
     </div>
     <div className="footer flex justify-between items-center px-4 mb-2">
