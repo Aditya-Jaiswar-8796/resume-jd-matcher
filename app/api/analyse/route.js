@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
-import { store } from "@/lib/store";
-import crypto from "crypto";
 
 export async function POST(request) {
+
   const body = await request.json();
   const { jd, resumes } = body;
+
+
   const results = resumes.map((resume) => {
+
     const jdSkills = jd.skills.map(skill =>
       skill.toLowerCase().trim()
     );
+
     if (!resume.sections.skills) {
       resume.sections.skills = [];
     }
+
     const resumeSkills = resume.sections.skills
       .flatMap(skill => skill.split(/\s+/g))
       .map(skill => skill.toLowerCase().trim());
@@ -23,24 +27,31 @@ export async function POST(request) {
       unMatchedSkills: jdSkills.filter(skill => !matchedSkills.includes(skill)),
       extraSkills: resumeSkills.filter(skill => !matchedSkills.includes(skill)),
     };
-    let expScore = 0;
+
+    let expScore;
     if (jd.experience <= resume.sections.experience) {
       expScore = 20;
     }
-    else {
+    else if (!expScore) {
+      expScore = 0;
+    } else {
       expScore = (resume.sections.experience / jd.experience) * 20;
     }
+
     let jobs = jd.jobTitle.trim().split(/\s+/g);
     let match = resume.text.includes(jobs);
     let titleScore;
     match ? titleScore = (jobs.length / match.length) * 10 : titleScore = 0.00;
     let type = jd.employmentType;
     let preference = resume.text.includes(type);
-    let typeScore = 0;
+    let typeScore;
     if (!preference) {
       typeScore = 15;
     } else {
       typeScore = (preference.length / type.length) * 15;
+    }
+    if (!typeScore) {
+      typeScore = 15;
     }
     let workMode = jd.workMode;
     let workpre = resume.text.includes(workMode);
@@ -52,6 +63,21 @@ export async function POST(request) {
     }
     const score = skillMatchScore + expScore + titleScore + typeScore + workModeScore;
     console.log(`Resume: ${resume.name}, Score: ${score.toFixed(2)}, skillMatchScore: ${skillMatchScore.toFixed(2)}, expScore: ${expScore.toFixed(2)}, titleScore: ${titleScore.toFixed(2)}, typeScore: ${typeScore.toFixed(2)}, workModeScore: ${workModeScore.toFixed(2)}`);
+
+    let comment, scoreColor;
+    if (score >= 80) {
+      comment = "Strong Match"
+      scoreColor = "teal"
+    } else if (score < 80 && score > 50) {
+      comment = "Good Match"
+      scoreColor = "yellow"
+    } else {
+      comment = "Weak Match"
+      scoreColor = "red"
+
+    }
+
+
     return {
       id: resume.id,
       jobTitle: jd.jobTitle,
@@ -63,13 +89,12 @@ export async function POST(request) {
       type: { typeScore: typeScore.toFixed(2), type, preference },
       workMode: { workModeScore: workModeScore.toFixed(2), workMode, workpre },
       totalscore: score.toFixed(2),
+      color: { comment, scoreColor }
     };
   });
-  const analysisId = crypto.randomUUID();
-  store.set(analysisId, results);
 
   return NextResponse.json({
-    analysis: "completed",
-    analysisId,
+    message: "Analysis completed",
+    results
   });
 }

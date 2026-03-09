@@ -1,11 +1,10 @@
 'use client'
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { ToastContainer, ToastContentProps, toast } from 'react-toastify';
 import mammoth from "mammoth";
-import { useFiles } from "../context/context";
 
 const ResumeUpload = (props) => {
-  const { files, setFiles } = useFiles();
+  const  files = props.files; 
   const [dragOver, setDragOver] = useState(false);
   const [resumeText, setResumeText] = useState([]);
 
@@ -70,7 +69,7 @@ const ResumeUpload = (props) => {
         return { name: f.name, text };
       })
     );
-    setFiles(validFiles);
+    props.setFiles(validFiles);
     console.log(validFiles);
     setResumeText(validText);
     console.log(validText);
@@ -96,7 +95,7 @@ const ResumeUpload = (props) => {
       f.name !== name
     ));
     console.log(newFiles);
-    setFiles(newFiles);
+    props.setFiles(newFiles);
     upload(newFiles,false);
   }
   const add = (file) => {

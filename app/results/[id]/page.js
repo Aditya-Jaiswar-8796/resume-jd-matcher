@@ -55,44 +55,9 @@ const ResultsPage = ({ params }) => {
     if (score >= 40) return "text-orange-500 bg-orange-100";
     return "text-red-500 bg-red-100";
   }
-  const loadFlies = async () => {
-    console.log("Fetching results for id:", id);
-    const res = await fetch(
-      `/api/results`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-      cache: "no-store"
-    }
-    );
-    const data = await res.json();
-    let { results } = data;
-    console.log("Results data:", results);
-    results.length !== 1 && results.sort((a, b) => b.totalscore - a.totalscore);
-    setResumes(results);
-    console.log(data);
 
 
-  }
 
-  const download = async () => {
-    const newRes = await fetch("/api/printresult", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ results: resumes })
-    });
-
-    const buffer = await newRes.arrayBuffer();
-    const blob = new Blob([buffer], { type: "application/pdf" });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "resume-screening-report.pdf";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <div className="relative h-[100vh] w-full flex flex-col gap-5  bg-indigo-950 items-center"><div className="absolute inset-0 bg-cyan-900  bg-[size:20px_20px] opacity-20 blur-[100px]"></div>

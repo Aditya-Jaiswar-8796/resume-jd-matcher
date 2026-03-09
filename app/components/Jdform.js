@@ -35,7 +35,7 @@ const Jdform = (props) => {
       body: JSON.stringify({ jd: data, resumes: props.extarctedResume }),
     });
     let res = await send.json();
-    router.push(`/results/${res.analysisId}`);
+    props.setResults(res.results);
     console.log(res)
     toast("Analysing", {
       autoClose: 8000,
